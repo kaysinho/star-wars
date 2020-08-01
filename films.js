@@ -1,12 +1,21 @@
 const request = require('request')
 const starWarsAPI = 'https://swapi.dev/api/films';
+const cliProgress = require('cli-progress');
 
 const Planets = require("./planets");
 const People = require("./people");
 const Species = require("./species");
 const Starships = require("./starships");
 
+const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
+let interval = setInterval(() => {
+    bar1.increment();
+}, 300);
+
 const getAll = async () => {
+    bar1.start(200, 0);
+
     return new Promise((resolve, reject) => {
         request.get(starWarsAPI, (error, response, body) => {
             if (error) {
@@ -17,7 +26,8 @@ const getAll = async () => {
             //Organizamos la respuesta
             normalize(filmsData.results)
                 .then(films => {
-                    resolve(films)
+                    clearInterval(interval);
+                    resolve(films);
                 })
 
         });
